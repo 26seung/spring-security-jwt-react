@@ -1,70 +1,32 @@
-# Getting Started with Create React App
+### 라이브러리 설치
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+    npm install react-router-dom
+    npm install react-bootstrap bootstrap
+    npm install @mui/material @emotion/react @emotion/styled
+    npm i axios
+    npm install react-validation
 
-## Available Scripts
+1. BrowserRouter 사용을 위하여 `npm i react-router-dom` 설치 필요
 
-In the project directory, you can run:
+2. 부트스트랩 UI 디자인 사용을 위해서는 `npm i react-bootstrap bootstrap` 라이브러리 설치 외에도  
+   최상단의 (index.js) 파일안에 `import 'bootstrap/dist/css/bootstrap.min.css';` 임포트가 필요하다.
 
-### `npm start`
+3. 머티리얼 UI 디자인을 사용하기 위해서는 `npm install @mui/material @emotion/react @emotion/styled` 라이브러리 설치가 필요
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+4. Http 요청을 사용하기 위해서 `axios` 를 설치하여 진행한다.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+5. 양식 유효성 검사를 진행하기 위하여 관련 `validation` 라이브러리를 설치한다.
 
-### `npm test`
+---
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+#### CORS 해결
 
-### `npm run build`
+cors 문제로 인하여 서버에서 쿠키나 값을 전달하여도 클라이언트에 받지를 못하는 문제가 생기곤 한다..
+그런 문제가 발생하면, `{withCredentials: true}` 를 사용하여 CORS 문제를 해결해 줄 수 있다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+여기서는 `Axios Interceptor`를 사용하기 때문에 `Interceptor` 코드 안에 `{withCredentials: true}` 를 적용해주면
+일일히 데이터를 주고받는 코드마다 적용하지 않고 일괄적으로 `CORS 문제`를 해결할 수 있다
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+인터셉터는 `http 요청 및 응답`이 전송, 수신되기 전에 필터의 역활을 해줍니다.
+이를 통해 서버로 전송된 요청의 헤더, 본문, 매개 변수를 조작하고 서버에서 받은 응답이 가장 합리적인지 확인할 수 있습니다.
+then 또는 catch에 의해 처리되기 전에 요청이나 응답을 가로챌 수 있습니다.
