@@ -58,93 +58,132 @@ Redux를 사용하면 `상태관리` 측면에서 많은 도움을 받을 수 �
 
 ##### 툴킷 소스 예제
 
-```js
-import React from 'react';
-import { createStore } from 'redux';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import store from './store';
-import { up } from './counterSlice';
-
-function Counter() {
-  const dispatch = useDispatch();
-  const count = useSelector((state) => {
-    return state.counter.value;
-  });
-  return (
-    <div>
-      <button
-        onClick={() => {
-          // 기존 리덕스 사용시 (action, paylod) 값을 지정해주어야 했음
-          // dispath({type:'counterSlice/up', step:2})
-
-          // 툴킷 사용시 간소화 사용가능 ,
-          // dispath(counterSlice.action.up(2))
-          dispatch(up(2));
-        }}
-      >
-        +
-      </button>{' '}
-      {count}
-    </div>
-  );
-}
-export default function App() {
-  return (
-    // {configureStore} 로 담아준 store 를 전달하여 사용
-    // 전달되어진 store 정보들을 사용하기 위해서는 useSelector 를 사용하면 된다.
-    <Provider store={store}>
-      <div>
-        <Counter></Counter>
-      </div>
-    </Provider>
-  );
-}
-```
-
 작은 store 형태인 slice 로 구분되어 진다,
 
-```js
-import { createSlice } from '@reduxjs/toolkit';
-const counterSlice = createSlice({
-  name: 'counterSlice',
-  initialState: { value: 0 },
-  reducers: {
-    up: (state, action) => {
-      state.value = state.value + action.payload;
-    },
-  },
-});
-export default counterSlice;
-export const { up } = counterSlice.actions;
-```
+1. `createSlice`
+
+   ```js
+   import { createSlice } from '@reduxjs/toolkit';
+   const counterSlice = createSlice({
+     name: 'counterSlice',
+     initialState: { value: 0 },
+     reducers: {
+       up: (state, action) => {
+         state.value = state.value + action.payload;
+       },
+     },
+   });
+   export default counterSlice;
+   export const { up } = counterSlice.actions;
+   ```
 
 여러 `slice` 들을 모아서 `store` 로 만들때는 `{configureStore}` 를 사용한다.  
 사용방법은 각각의 slice 들의 reducer 들이 들어가면 된다.
 
 이전 작업한 `counterSlice` 함수 내에 있는 `reducers (ex : up, down, set...)` 들을 하나로 합쳐서 자동으로 만들어 준다.
 
-```js
-import { configureStore } from '@reduxjs/toolkit';
-import counterSlice from './counterSlice';
+2. `configureStore`
 
-const store = configureStore({
-  reducer: {
-    counter: counterSlice.reducer,
-  },
-});
-export default store;
-```
+   ```js
+   import { configureStore } from '@reduxjs/toolkit';
+   import counterSlice from './counterSlice';
+
+   const store = configureStore({
+     reducer: {
+       counter: counterSlice.reducer,
+     },
+   });
+   export default store;
+   ```
+
+3. `useDispatch / useSelector`
+
+   ```js
+   import React from 'react';
+   import { createStore } from 'redux';
+   import { Provider, useSelector, useDispatch } from 'react-redux';
+   import store from './store';
+   import { up } from './counterSlice';
+
+   function Counter() {
+     const dispatch = useDispatch();
+     const count = useSelector((state) => {
+       return state.counter.value;
+     });
+     return (
+       <div>
+         <button
+           onClick={() => {
+             // 기존 리덕스 사용시 (action, paylod) 값을 지정해주어야 했음
+             // dispath({type:'counterSlice/up', step:2})
+
+             // 툴킷 사용시 간소화 사용가능 ,
+             // dispath(counterSlice.action.up(2))
+             dispatch(up(2));
+           }}
+         >
+           +
+         </button>{' '}
+         {count}
+       </div>
+     );
+   }
+   export default function App() {
+     return (
+       // {configureStore} 로 담아준 store 를 전달하여 사용
+       // 전달되어진 store 정보들을 사용하기 위해서는 useSelector 를 사용하면 된다.
+       <Provider store={store}>
+         <div>
+           <Counter></Counter>
+         </div>
+       </Provider>
+     );
+   }
+   ```
 
 ---
 
-담아준 `store` 는
+#### 툴킷을 이용하여 비동기 작업이 가능하다.
 
-비동기 작업
-createAsyncThunk
+thunk 를 사용하면 비동기 작업을 도와주는 액션을 만들어준다.
+비동기 작업을 도와주는 api 는 `createAsyncThunk` 이다.
 
-function.pending - 비동기 작업을 시작했을 때
-function.fulfilled - 비동기 작업을 끝냈을 때
-function.rejected - 요류가 생겨 중단되었을 때
-function.fulfilled -
+- `createAsyncThunk은` 비동기작업을 처리하는 action creator를 만듭니다.
+- action creator는 아래와 같이 3가지 상태를 갖습니다.
+  - action creator.`pending` - 비동기 작업을 시작했을 때 (대기상태)
+  - action creator.`fulfilled` - 비동기 작업을 끝냈을 때 (완료상태)
+  - action creator.`rejected` - 요류가 생겨 중단되었을 때 (오류상태)
+- thunk는 각각의 상태에 따른 `reducer`를 체계적으로 작성할 수 있도록 유도합니다.
+- thunk를 처리할 때는 `extraReducers`를 사용합니다.
+
+  ```js
+  //  (reducers: 동기 , extraReducers: 비동기) 에 따라 구분 사용
+  const authSlice = createSlice({
+    name: 'auth',
+    initialState,
+    extraReducers: {
+      [register.fulfilled]: (state, action) => {
+        state.isLoggedIn = false;
+      },
+      [register.rejected]: (state, action) => {
+        state.isLoggedIn = false;
+      },
+      [login.fulfilled]: (state, action) => {
+        state.isLoggedIn = true;
+        state.user = action.payload.user;
+      },
+      [login.rejected]: (state, action) => {
+        state.isLoggedIn = false;
+        state.user = null;
+      },
+      [logout.fulfilled]: (state, action) => {
+        state.isLoggedIn = false;
+        state.user = null;
+      },
+    },
+  });
+  ```
+
+`createAsyncThunk` 의 `return` 값이 `action.paylod` 값으로 주입되며 `useSelector` 를 이용하여 값을 사용
 
 ---
