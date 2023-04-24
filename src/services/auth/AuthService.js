@@ -45,14 +45,10 @@ const join = (username, password) => {
 
 const login = async (username, password) => {
   return http
-    .post(
-      '/auth/login',
-      {
-        username,
-        password,
-      },
-      // { withCredentials: true },
-    )
+    .post('/auth/login', {
+      username,
+      password,
+    })
     .then((res) => {
       //  accessToken 저장
       // let jwtToken = res.headers.get('authorization');
