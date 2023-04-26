@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Nav, Navbar } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import AuthService from '../service/auth/AuthService';
+import AuthService from 'services/auth/AuthService';
+import { logout } from 'slice/authSlice';
 
 const Header = () => {
+  const dispatch = useDispatch();
   const [currentUser, setCurrentUser] = useState(undefined);
-
+  // const { user: currentUser } = useSelector((state) => state.auth);
+  // const currentUser = useSelector((state) => state.auth);
   useEffect(() => {
-    //  AuthService 에서 getCurrentUser 를 호출하여, localstorage 에 저장하였던 'user' 키 값을 불러온다.
+    //   //  AuthService 에서 getCurrentUser 를 호출하여, localstorage 에 저장하였던 'user' 키 값을 불러온다.
     const auth = AuthService.getCurrentUser();
 
     if (auth) {
@@ -21,9 +25,15 @@ const Header = () => {
     };
     //  localstorage 에 저장되어 있는 'user' 키 값을 삭제 한다.
   }, []);
-
-  const logout = () => {
-    AuthService.logout();
+  console.log('aaaa : ', currentUser);
+  const logOutButton = () => {
+    // AuthService.logout();
+    dispatch(logout())
+      // .unwrap()
+      .then((res) => {
+        console.log('logout res : ', res);
+      });
+    console.log('loglog');
     setCurrentUser('');
   };
   return (
@@ -51,7 +61,7 @@ const Header = () => {
                 {/* {currentUser?.username} 님 */}
                 아무개
               </Link>
-              <Link to="/login" className="nav-link" onClick={logout}>
+              <Link to="/login" className="nav-link" onClick={logOutButton}>
                 로그아웃
               </Link>
             </Nav>

@@ -22,9 +22,25 @@ const Footer = () => {
       >
         <Container maxWidth="sm">
           <Typography variant="body1" color={'white'}>
-            Page Footer !!
-            <br />
-            Page Footer !!
+            <div
+              class="copy"
+              style={{
+                flexDirection: 'column',
+                justifyContent: 'center',
+                height: '100%',
+              }}
+            >
+              <p
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  fontSize: '13px',
+                  paddingTop: '2px',
+                }}
+              >
+                © 2023 ** Programing from Euseung
+              </p>
+            </div>
           </Typography>
         </Container>
       </Box>
