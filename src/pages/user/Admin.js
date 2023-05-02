@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import AuthService from '../../service/auth/AuthService';
+import AuthService from 'services/auth/AuthService';
 
 const Admin = () => {
   useEffect(() => {
